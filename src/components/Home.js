@@ -8,9 +8,9 @@ const Home = () => {
     return (
         <>
             <div className="container mt-5">
-                <h1>Back-End Nuds</h1>
+                <h1>Booking.com</h1>
                 {currentUser ? (
-                    <p>คุณล็อคอินอยู่นะ<Link to="/dashboard">ไปหน้าจัดการ</Link></p>
+                    <p>คุณล็อคอินอยู่นะ<Link to="/dashboard">Go to back</Link></p>
                 ) : (
                     <p>
                         <Link to="/login" className="btn btn-primary">เข้าสู่ระบบ</Link>

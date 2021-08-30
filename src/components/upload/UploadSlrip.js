@@ -61,7 +61,7 @@ export default function UploadSlrip() {
   .then(function () {
   console.log("Value successfully written!");
   alert("เรียบร้อย")
-  window.location.reload();
+  routeChange()
   })
   .catch(function (error) {
   console.error("Error writing Value: ", error);
@@ -172,7 +172,7 @@ export default function UploadSlrip() {
                                     <Card.Title>ชื่อ : วิภาดา วิชระโภชน์</Card.Title>
                                     <Card.Title>"ธนาคารกรุงไทย( Krungthai )"</Card.Title>
                                     <Card.Title>หรือ</Card.Title>
-                                    <Image src="https://sv1.picz.in.th/images/2021/08/26/Cd2Dte.jpg" style={{ width: '50%',height:'50%'}}></Image>
+                                    <Image src="https://sv1.picz.in.th/images/2021/08/27/C0txEN.jpg" style={{ width: '50%',height:'50%'}}></Image>
                                     <Card.Text>
                                         พร้อมเพย์
                                     </Card.Text>

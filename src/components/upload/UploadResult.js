@@ -4,31 +4,6 @@ import { firestore, storage } from "../database/firebase";
 import { Offcanvas, Image, Row, Form, Button, Card, Navbar, Container } from 'react-bootstrap';
 import { MdDateRange } from 'react-icons/fa';
 
-function getNumberOfDays(start, end) {
-    const date1 = new Date(start);
-    const date2 = new Date(end);
-
-    // One day in milliseconds
-    const oneDay = 1000 * 60 * 60 * 24;
-
-    // Calculating the time difference between two dates
-    const diffInTime = date2.getTime() - date1.getTime();
-
-    // Calculating the no. of days between two dates
-    const diffInDays = Math.round(diffInTime / oneDay);
-
-    return diffInDays;
-}
-
-function getPriceRoom(dayNum, priceRoom) {
-
-    return 500 * dayNum;
-}
-
-function getPriceRoomAndPro(priceRoom) {
-
-    return priceRoom * 20 / 100;
-}
 
 
 
@@ -66,38 +41,9 @@ export default function UploadResult() {
   });
   }
   
-    const handleChange = e => {
-      if (e.target.files[0]) {
-        setImage(e.target.files[0]);
-      }
-    };
   
-    const handleUpload = () => {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      uploadTask.on(
-        "state_changed",
-        snapshot => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(progress);
-        },
-        error => {
-          console.log(error);
-        },
-        () => {
-          storage
-            .ref("images")
-            .child(image.name)
-            .getDownloadURL()
-            .then(url => {
-              setUrl(url);
-              addDataforRoom(url)
-            });
-        }
-      );
-      
-    };
+  
+    
   
     console.log("image: ", image);
 
@@ -110,7 +56,7 @@ export default function UploadResult() {
         ref.get()
             .then((doc) => {
                 let tempDataArray = [];
-                if (doc.exists && id == doc.data().orderid) {
+                if (doc.exists) {
                     console.log("=====", doc.data().orderid)
                     tempDataArray = [
                         ...tempDataArray,
@@ -145,16 +91,21 @@ export default function UploadResult() {
 
     return (
         <body>
-            <div style={{ marginTop: '2%' }}>
+            <div style={{ marginTop: '5%' }}>
                 <center>
                     {data.map((item, index) => {
                         return (
-                            <Card style={{ width: '97%', textAlign: 'left' }} className="text-dark bg-light">
-                                <Card.Body>
-                                   
-                                </Card.Body>
-                            </Card>
-
+                          <div>
+                              <b><h3>อัพสลิปเสร็จสิ้น</h3></b>
+                              <b>คุณ : </b> {item.name}<br/>
+                              <b>จองห้อง : </b> {item.roomNumber}<br/>
+                              <b>จำนวนผู้เข้าพัก : </b> {item.number} <b>คน</b><br/>
+                              <b>จำนวนวันที่เข้าพัก : </b> {item.stayDay} <b>คืน</b><br/>
+                              <b>ราคาที่คุณต้องจ่ายทั้งสิ้น : </b> {item.roomRate} <b>บาท</b><br/>
+                              <b>รหัสการจอง : </b> {item.orderid}<br/>
+                              ***คุณสามารถปิดแถบลงได้เลย***<br/>
+                              ***โปรดรอเจ้าหน้าที่ทำการเช็คข้อมูล***
+                          </div>
                         );
                     })}
                 </center>

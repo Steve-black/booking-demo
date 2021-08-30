@@ -9,6 +9,7 @@ import UploadSlrip from './components/upload/UploadSlrip'
 import HomeUpload from './components/upload/HomeUpload'
 import Result from './components/Result'
 import UploadResult from './components/upload/UploadResult'
+import PositionMark from './components/position/PositionMark'
 import { AuthProvider } from './components/Auth'
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
           <Route path="/date/:room&:id" children={<Selectdate/>} />
           <Route path="/slrip/:room&:id" children={<UploadSlrip/>} />
           <Route path="/upresult/:room" children={<UploadResult/>} />
+          <Route exact path="/position" component={PositionMark} />
           <Route exact path="/home" component={Home} />
           <Route exact path="/dashboard" component={Dashboard} />
           <Route exact path="/login" component={LogIn} />
