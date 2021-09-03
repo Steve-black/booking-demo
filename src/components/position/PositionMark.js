@@ -6,8 +6,8 @@ const AnyReactComponent = ({ text }) => <div>{text}</div>;
 export default function PositionMark(){
   const defaultProps = {
     center: {
-      lat: 16.749020749007276,
-      lng: 100.18835016617605
+      lat: 10.99835602,
+      lng: 77.01502627
     },
     zoom: 11
   };
@@ -16,7 +16,7 @@ export default function PositionMark(){
     // Important! Always set the container height explicitly
     <div style={{ height: '100vh', width: '100%' }}>
       <GoogleMapReact
-        bootstrapURLKeys={{ key: "" }}
+        bootstrapURLKeys={{ key: "AIzaSyDpWETFhapZJudji9W68K6tOvXqi23ZALo" }}
         defaultCenter={defaultProps.center}
         defaultZoom={defaultProps.zoom}
       >

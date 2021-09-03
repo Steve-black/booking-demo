@@ -3,20 +3,85 @@ import { Redirect ,useHistory} from 'react-router-dom'
 import { AuthContext } from './Auth'
 import { firestore } from "./database/firebase";
 import firebaseApp from "./database/firebase";
-import { Navbar, NavDropdown, Nav, Container, Tab, Button, Dropdown } from 'react-bootstrap';
+import { Navbar, NavDropdown, Nav, Container, Modal, Button, Dropdown } from 'react-bootstrap';
 import MaterialTable from 'material-table';
+import { FormControl,TextField } from '@material-ui/core';
 
 
 function Managers() {
   
   const { currentUser } = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [dataOne, setDataOne] = useState([]);
+  const [roomEdit,setRoomEdit] = useState("");
 
+  const [name,setName] = useState("");
+  const [email,setEmail] = useState("");
+  const [tel,setTel] = useState("");
+  const [dateIn,setDateIn] = useState("");
+  const [dateOut,setDateOut] = useState("");
+  const [number,setNumber] = useState("");
+  
   const history = useHistory();
+
+
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const editRoom = (room) => {
+    setRoomEdit(room)
+    getDataEdit(room)
+    handleShow()
+  }
 
   const routeChange = (room) =>{ 
     let path = "/result/"+room;
     history.push(path);
+  }
+
+  const getDataEdit = (room) => {
+    
+      const ref = firestore.collection("Rooms").doc(room);
+      ref.get()
+          .then((doc) => {
+              let tempDataArray = [];
+              if (doc.exists) {
+                setName(doc.data().name)
+                setEmail(doc.data().email)
+                setTel(doc.data().tel)
+                setNumber(doc.data().number)
+                setDateIn(doc.data().dateIn)
+                setDateOut(doc.data().dateOut)
+                  tempDataArray = [
+                      ...tempDataArray,
+                      {
+                          id: doc.id,
+                          roomNumber: doc.data().roomNumber,
+                          name: doc.data().name,
+                          email: doc.data().email,
+                          tel: doc.data().tel,
+                          typeRoom: doc.data().typeRoom,
+                          dateIn: doc.data().dateIn,
+                          dateOut: doc.data().dateOut,
+                          number: doc.data().number,
+                          orderid: doc.data().orderid,
+                          paymentStatus: doc.data().paymentStatus,
+                          roomDetails: doc.data().roomDetails,
+                          staTus: doc.data().staTus,
+                          priceRoom: doc.data().priceRoom,
+                      },
+                  ];
+              } else {
+                  console.log("No such document!");
+              }
+              setDataOne((dataOne) => tempDataArray);
+          })
+          .catch((error) => {
+              console.log("Error");
+          });
+
   }
 
   function checkStatus(status,room){
@@ -42,7 +107,7 @@ function Managers() {
   
     <Dropdown.Menu>
       <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
-      <Dropdown.Item href="#/action-2">แก้ไข</Dropdown.Item>
+      <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
     </Dropdown.Menu>
   </Dropdown>;
   }
@@ -108,6 +173,28 @@ console.error("Error writing Value: ", error);
 
   }, []);
 
+  const updateDataforRoom = () => {
+    firestore.collection("Rooms")
+.doc(roomEdit)
+.update({
+  name: name,
+  email: email,
+  tel: tel,
+  dateIn: dateIn,
+  dateOut: dateOut,
+  number: number,
+  orderid: "B"+roomEdit+tel+"K",
+})
+.then(function () {
+console.log("Value successfully written!");
+alert("แก้ไขเรียบร้อย")
+handleClose()
+})
+.catch(function (error) {
+console.error("Error writing Value: ", error);
+});
+}
+
   const columns = [
     { title: <b>เลขห้อง</b>, field: 'roomNumber' },
     { title: <b>ชื่อผู้เข้าพัก</b>, field: 'name' },
@@ -147,6 +234,35 @@ console.error("Error writing Value: ", error);
         paging:false,
         pageSize:9}}/>
       </div></center>
+      <Modal show={show} onHide={handleClose} animation={false}>
+        <Modal.Header closeButton>
+        <Modal.Title>แก้ไขข้อมูล ห้อง {roomEdit}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        {dataOne.map((item, index) => {
+                        return (
+                          <div class="text-center">
+                            <TextField id="standard-basic" label="ชื่อ" value={name} onChange={(e) => setName(e.target.value)} />&nbsp;&nbsp;&nbsp;
+                            <TextField id="standard-basic" label="อีเมล" value={email}onChange={(e) => setEmail(e.target.value)} /><br/><br/>
+                            <TextField id="standard-basic" label="เบอร์" value={tel}onChange={(e) => setTel(e.target.value)} />&nbsp;&nbsp;&nbsp;
+                            <TextField id="standard-basic" label="จำนวนคนที่เข้าพัก" value={number}onChange={(e) => setNumber(e.target.value)} /><br/><br/>
+                            <TextField id="standard-basic" label="วันเข้าพัก" value={dateIn} onChange={(e) => setDateIn(e.target.value)}/>&nbsp;&nbsp;&nbsp;
+                            <TextField id="standard-basic" label="วันที่ออก" value={dateOut}onChange={(e) => setDateOut(e.target.value)} /><br/><br/>
+                            <TextField id="standard-basic" label="รหัสการจอง" value={item.orderid} disabled/>
+                          </div>
+                        );
+                  })
+        }
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            ยกเลิก
+          </Button>
+          <Button variant="primary" onClick={() => updateDataforRoom()}>
+            บันทึก
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </body>
   );
 }
