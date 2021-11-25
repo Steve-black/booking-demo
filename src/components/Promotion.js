@@ -8,7 +8,7 @@ import MaterialTable from 'material-table';
 import { FormControl,TextField } from '@material-ui/core';
 
 
-function Managers() {
+function Promotion() {
   
   const { currentUser } = useContext(AuthContext);
   const [data, setData] = useState([]);
@@ -85,13 +85,12 @@ function Managers() {
   }
 
   function checkStatus(status,room){
-    var sTus = status.split("-");
-    if (sTus[0] == "อัพสลิปแล้ว"){
+    if (status == "อัพสลิปแล้ว"){
       return <center><Button variant="info" onClick={() => routeChange(room)}>เช็คการชำระเงิน</Button></center>;
-    }else if (sTus[0] == "ยืนยันการจองแล้ว"){
+    }else if (status == "ยืนยันการจองแล้ว"){
       return <center><Button variant="success" enable={false}>{status}</Button></center>;
     }
-    else if (sTus[0] == "รอชำระ"){
+    else if (status == "รอชำระ"){
       return <center><Button variant="warning" enable={false}>{status}</Button></center>;
     }
     else {
@@ -201,8 +200,6 @@ console.error("Error writing Value: ", error);
     { title: <b>ชื่อผู้เข้าพัก</b>, field: 'name' },
     { title: <b>email</b>, field: 'email' },
     { title: <b>เบอร์</b>, field: 'tel' },
-    { title: <b>วันที่เข้าพัก</b>, field: 'dateIn' },
-    { title: <b>วันที่ออก</b>, field: 'dateOut' },
     { title: <b>รหัสการจอง</b>, field: 'orderid' },
     { title: <b>สถานะ</b>, field: 'staTus' },
     { title: <b>ตัวเลือก</b>, field: 'choice' }
@@ -217,17 +214,17 @@ console.error("Error writing Value: ", error);
       <Navbar bg="info" expand="lg">
         <Container>
           <Navbar.Brand href="/dashboard">
-            Booking
+            Booking.com
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto">
-              <Nav.Link href="/dashboard"><i class="fas fa-home"></i> หน้าหลัก</Nav.Link>
-              <Nav.Link href="/manager"><b><i class="fas fa-door-closed"></i> จัดการห้องพัก</b></Nav.Link>
-              <Nav.Link href="/booking"><i class="fas fa-clipboard-list"></i> จองห้อง</Nav.Link>
+              <Nav.Link href="/dashboard">Home</Nav.Link>
+              <Nav.Link href="/manager">จัดการห้องพัก</Nav.Link>
+              <Nav.Link href="/promotion">โปรโมชั่น</Nav.Link>
             </Nav>
             <Nav>
-              <Nav.Link><button onClick={() => firebaseApp.auth().signOut()} class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> ออกจากระบบ</button></Nav.Link>
+              <Nav.Link><button onClick={() => firebaseApp.auth().signOut()} class="btn btn-danger">ออกจากระบบ</button></Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -249,8 +246,8 @@ console.error("Error writing Value: ", error);
                             <TextField id="standard-basic" label="อีเมล" value={email}onChange={(e) => setEmail(e.target.value)} /><br/><br/>
                             <TextField id="standard-basic" label="เบอร์" value={tel}onChange={(e) => setTel(e.target.value)} />&nbsp;&nbsp;&nbsp;
                             <TextField id="standard-basic" label="จำนวนคนที่เข้าพัก" value={number}onChange={(e) => setNumber(e.target.value)} /><br/><br/>
-                            <TextField id="standard-basic" type="date" ata-date-format="YYYY-MM-DD" label="วันเข้าพัก" value={dateIn} onChange={(e) => setDateIn(e.target.value)}/>&nbsp;&nbsp;&nbsp;
-                            <TextField id="standard-basic" type="date" ata-date-format="YYYY-MM-DD" label="วันที่ออก" value={dateOut}onChange={(e) => setDateOut(e.target.value)} /><br/><br/>
+                            <TextField id="standard-basic" label="วันเข้าพัก" value={dateIn} onChange={(e) => setDateIn(e.target.value)}/>&nbsp;&nbsp;&nbsp;
+                            <TextField id="standard-basic" label="วันที่ออก" value={dateOut}onChange={(e) => setDateOut(e.target.value)} /><br/><br/>
                             <TextField id="standard-basic" label="รหัสการจอง" value={item.orderid} disabled/>
                           </div>
                         );
@@ -273,4 +270,4 @@ console.error("Error writing Value: ", error);
 
 
 
-export default Managers;
+export default Promotion;

@@ -26,6 +26,9 @@ export default function Selectdate() {
 
     const history = useHistory();
 
+    var now = new Date();
+    var dateFormat = require("dateformat");
+
     function getNumberOfDays(start, end) {
         const date1 = new Date(start);
         const date2 = new Date(end);
@@ -80,7 +83,7 @@ export default function Selectdate() {
         dateOut: dOut,
         roomRate: roomRate,
         stayDay: stayDay,
-        staTus: "รอชำระ",
+        staTus: "รอชำระ-"+dateFormat(now, 'mmmm dd, yyyy HH:MM:ss Z'),
     })
     .then(function () {
     console.log("Value successfully written!");

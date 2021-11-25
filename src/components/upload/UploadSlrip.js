@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams ,useHistory} from "react-router-dom";
+import { useParams, useHistory } from "react-router-dom";
 import { firestore, storage } from "../database/firebase";
 import { Offcanvas, Image, Row, Form, Button, Card, Navbar, Container } from 'react-bootstrap';
 import { MdDateRange } from 'react-icons/fa';
@@ -32,7 +32,6 @@ function getPriceRoomAndPro(priceRoom) {
 
 
 
-
 export default function UploadSlrip() {
     let { room, id } = useParams();
     const [data, setData] = useState([]);
@@ -52,60 +51,61 @@ export default function UploadSlrip() {
     const [progress, setProgress] = useState(0);
 
     const history = useHistory();
-  
+
+
     const addDataforRoom = (url1) => {
-      firestore.collection("Rooms").doc(room).update({
-      imgPath: url1,
-      staTus: "อัพสลิปแล้ว",
-  })
-  .then(function () {
-  console.log("Value successfully written!");
-  alert("เรียบร้อย")
-  routeChange()
-  })
-  .catch(function (error) {
-  console.error("Error writing Value: ", error);
-  });
-  }
-  
+        firestore.collection("Rooms").doc(room).update({
+            imgPath: url1,
+            staTus: "อัพสลิปแล้ว",
+        })
+            .then(function () {
+                console.log("Value successfully written!");
+                alert("เรียบร้อย")
+                routeChange()
+            })
+            .catch(function (error) {
+                console.error("Error writing Value: ", error);
+            });
+    }
+
     const handleChange = e => {
-      if (e.target.files[0]) {
-        setImage(e.target.files[0]);
-      }
+        if (e.target.files[0]) {
+            setImage(e.target.files[0]);
+        }
     };
 
-    const routeChange = () =>{ 
-        let path = "/upresult/"+room;
+    const routeChange = () => {
+        let path = "/upresult/" + room;
         history.push(path);
-      }
-  
+    }
+
     const handleUpload = () => {
-      const uploadTask = storage.ref(`images/${image.name}`).put(image);
-      uploadTask.on(
-        "state_changed",
-        snapshot => {
-          const progress = Math.round(
-            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-          );
-          setProgress(progress);
-        },
-        error => {
-          console.log(error);
-        },
-        () => {
-          storage
-            .ref("images")
-            .child(image.name)
-            .getDownloadURL()
-            .then(url => {
-              setUrl(url);
-              addDataforRoom(url)
-            });
-        }
-      );
-      
+        const uploadTask = storage.ref(`images/${image.name}`).put(image);
+        uploadTask.on(
+            "state_changed",
+            snapshot => {
+                const progress = Math.round(
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+                );
+                setProgress(progress);
+            },
+            error => {
+                console.log(error);
+            },
+            () => {
+                storage
+                    .ref("images")
+                    .child(image.name)
+                    .getDownloadURL()
+                    .then(url => {
+                        setUrl(url);
+                        addDataforRoom(url)
+                    });
+            }
+        );
+
     };
-  
+
     console.log("image: ", image);
 
 
@@ -168,21 +168,21 @@ export default function UploadSlrip() {
                                     <Card.Text>พักจำนวน : {item.stayDay} วัน</Card.Text>
                                     <Card.Text>ราคาหลังหักส่วนลด : {item.roomRate} บาท</Card.Text>
                                     <center>
-                                    <Card.Title>เลขบัญชี : 857-0-64019-6</Card.Title>
-                                    <Card.Title>ชื่อ : วิภาดา วิชระโภชน์</Card.Title>
-                                    <Card.Title>"ธนาคารกรุงไทย( Krungthai )"</Card.Title>
-                                    <Card.Title>หรือ</Card.Title>
-                                    <Image src="https://sv1.picz.in.th/images/2021/08/27/C0txEN.jpg" style={{ width: '50%',height:'50%'}}></Image>
-                                    <Card.Text>
-                                        พร้อมเพย์
-                                    </Card.Text>
+                                        <Card.Title>เลขบัญชี : 857-0-64019-6</Card.Title>
+                                        <Card.Title>ชื่อ : วิภาดา วิชระโภชน์</Card.Title>
+                                        <Card.Title>"ธนาคารกรุงไทย( Krungthai )"</Card.Title>
+                                        <Card.Title>หรือ</Card.Title>
+                                        <Image src="https://sv1.picz.in.th/images/2021/08/27/C0txEN.jpg" style={{ width: '50%', height: '50%' }}></Image>
+                                        <Card.Text>
+                                            พร้อมเพย์
+                                        </Card.Text>
                                     </center>
                                     <Card.Text>
                                         *โอนเงินแล้วอัพสลิปใบเสร็จ*
                                     </Card.Text>
                                     <Form.Group controlId="formFile" className="mb-3">
                                         <Form.Label>อัพโหลดสลิป</Form.Label>
-                                        <Form.Control type="file" accept="image/*" id="photo" class="form-control" onChange={handleChange}/>
+                                        <Form.Control type="file" accept="image/*" id="photo" class="form-control" onChange={handleChange} />
                                     </Form.Group>
                                     <center><Button variant="success" onClick={handleUpload}>เสร็จสิ้น</Button></center>
                                 </Card.Body>
