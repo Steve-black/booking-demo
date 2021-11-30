@@ -112,7 +112,7 @@ function Managers() {
   function choiceButton(status, room,imgSS) {
     var sTus = status.split("-");
     if (sTus[0] == "ยืนยันการจองแล้ว") {
-      return <Dropdown>
+      return <div><Dropdown>
         <Dropdown.Toggle variant="dark" id="dropdown-basic">
           เพิ่มเติม
         </Dropdown.Toggle>
@@ -122,7 +122,22 @@ function Managers() {
           <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
           <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
         </Dropdown.Menu>
-      </Dropdown>;
+      </Dropdown>
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>หลักฐานการจ่ายเงิน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h1>Test</h1>
+            <img src={imgSS} style={{width:'100%',height:'100%'}}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      </div>;
 
     }
     else {
@@ -291,21 +306,6 @@ function Managers() {
           </Button>
           <Button variant="primary" onClick={() => updateDataforRoom()}>
             บันทึก
-          </Button>
-        </Modal.Footer>
-      </Modal>
-
-      <Modal show={show2} onHide={handleClose2}>
-        <Modal.Header closeButton>
-          <Modal.Title>หลักฐานการจ่ายเงิน</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <h1>Test</h1>
-            //<img src={imgSelect} style={{width:'100%',height:'100%'}}/>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose2}>
-            ยกเลิก
           </Button>
         </Modal.Footer>
       </Modal>
