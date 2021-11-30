@@ -9,6 +9,7 @@ import Selectdate from './components/upload/Selectdate'
 import UploadSlrip from './components/upload/UploadSlrip'
 import HomeUpload from './components/upload/HomeUpload'
 import Result from './components/Result'
+import ResultHistory from './components/ResultHistory'
 import UploadResult from './components/upload/UploadResult'
 import PositionMark from './components/position/PositionMark'
 import { AuthProvider } from './components/Auth'
@@ -20,6 +21,7 @@ function App() {
       <Router>
         <Switch>
           <Route path="/result/:room" children={<Result/>} />
+          <Route path="/resulthistory/:room" children={<ResultHistory/>} />
           <Route path="/room/:room" children={<HomeUpload/>} />
           <Route path="/date/:room&:id" children={<Selectdate/>} />
           <Route path="/slrip/:room&:id" children={<UploadSlrip/>} />

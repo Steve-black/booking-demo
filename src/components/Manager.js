@@ -40,6 +40,10 @@ function Managers() {
     let path = "/result/"+room;
     history.push(path);
   }
+  const routeChangeHistory = (room) =>{ 
+    let path = "/resulthistory/"+room;
+    history.push(path);
+  }
 
   const getDataEdit = (room) => {
     
@@ -100,17 +104,34 @@ function Managers() {
     
   }
 
-  function choiceButton(room){
-    return <Dropdown>
-    <Dropdown.Toggle variant="dark" id="dropdown-basic">
-      เพิ่มเติม
-    </Dropdown.Toggle>
-  
-    <Dropdown.Menu>
-      <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
-      <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
-    </Dropdown.Menu>
-  </Dropdown>;
+  function choiceButton(status,room){
+    var sTus = status.split("-");
+    if (sTus[0] == "ยืนยันการจองแล้ว") {
+      return <Dropdown>
+      <Dropdown.Toggle variant="dark" id="dropdown-basic">
+        เพิ่มเติม
+      </Dropdown.Toggle>
+    
+      <Dropdown.Menu>
+      <Dropdown.Item onClick={() => routeChangeHistory(room)}>ดูสลิป</Dropdown.Item>
+        <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
+        <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>;
+    }
+    else {
+      return <Dropdown>
+      <Dropdown.Toggle variant="dark" id="dropdown-basic">
+        เพิ่มเติม
+      </Dropdown.Toggle>
+    
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
+        <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>;
+    }
+    
   }
 
   const resetRoom = (room) => {
@@ -160,7 +181,7 @@ console.error("Error writing Value: ", error);
                 roomDetails: doc.data().roomDetails,
                 staTus: checkStatus(doc.data().staTus,doc.data().roomNumber),
                 priceRoom: doc.data().priceRoom,
-                choice: choiceButton(doc.data().roomNumber),
+                choice: choiceButton(doc.data().staTus,doc.data().roomNumber),
               },
             ];
           }
