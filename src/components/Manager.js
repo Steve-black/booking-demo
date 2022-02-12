@@ -1,27 +1,27 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Redirect ,useHistory} from 'react-router-dom'
+import { Redirect, useHistory } from 'react-router-dom'
 import { AuthContext } from './Auth'
 import { firestore } from "./database/firebase";
 import firebaseApp from "./database/firebase";
 import { Navbar, NavDropdown, Nav, Container, Modal, Button, Dropdown } from 'react-bootstrap';
 import MaterialTable from 'material-table';
-import { FormControl,TextField } from '@material-ui/core';
+import { FormControl, TextField } from '@material-ui/core';
 
 
 function Managers() {
-  
+
   const { currentUser } = useContext(AuthContext);
   const [data, setData] = useState([]);
   const [dataOne, setDataOne] = useState([]);
-  const [roomEdit,setRoomEdit] = useState("");
+  const [roomEdit, setRoomEdit] = useState("");
 
-  const [name,setName] = useState("");
-  const [email,setEmail] = useState("");
-  const [tel,setTel] = useState("");
-  const [dateIn,setDateIn] = useState("");
-  const [dateOut,setDateOut] = useState("");
-  const [number,setNumber] = useState("");
-  
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [tel, setTel] = useState("");
+  const [dateIn, setDateIn] = useState("");
+  const [dateOut, setDateOut] = useState("");
+  const [number, setNumber] = useState("");
+
   const history = useHistory();
 
 
@@ -30,14 +30,22 @@ function Managers() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
+  const [show2, setShow2] = useState(false);
+
+  
+
+  const handleClose2 = () => setShow2(false);
+  const handleShow2 = () => setShow2(true);
+  const [imgSelect, setImhSelect] = useState("");
+
   const editRoom = (room) => {
     setRoomEdit(room)
     getDataEdit(room)
     handleShow()
   }
 
-  const routeChange = (room) =>{ 
-    let path = "/result/"+room;
+  const routeChange = (room) => {
+    let path = "/result/" + room;
     history.push(path);
   }
   const routeChangeHistory = (room) =>{ 
@@ -46,64 +54,110 @@ function Managers() {
   }
 
   const getDataEdit = (room) => {
-    
-      const ref = firestore.collection("Rooms").doc(room);
-      ref.get()
-          .then((doc) => {
-              let tempDataArray = [];
-              if (doc.exists) {
-                setName(doc.data().name)
-                setEmail(doc.data().email)
-                setTel(doc.data().tel)
-                setNumber(doc.data().number)
-                setDateIn(doc.data().dateIn)
-                setDateOut(doc.data().dateOut)
-                  tempDataArray = [
-                      ...tempDataArray,
-                      {
-                          id: doc.id,
-                          roomNumber: doc.data().roomNumber,
-                          name: doc.data().name,
-                          email: doc.data().email,
-                          tel: doc.data().tel,
-                          typeRoom: doc.data().typeRoom,
-                          dateIn: doc.data().dateIn,
-                          dateOut: doc.data().dateOut,
-                          number: doc.data().number,
-                          orderid: doc.data().orderid,
-                          paymentStatus: doc.data().paymentStatus,
-                          roomDetails: doc.data().roomDetails,
-                          staTus: doc.data().staTus,
-                          priceRoom: doc.data().priceRoom,
-                      },
-                  ];
-              } else {
-                  console.log("No such document!");
-              }
-              setDataOne((dataOne) => tempDataArray);
-          })
-          .catch((error) => {
-              console.log("Error");
-          });
+
+    const ref = firestore.collection("Rooms").doc(room);
+    ref.get()
+      .then((doc) => {
+        let tempDataArray = [];
+        if (doc.exists) {
+          setName(doc.data().name)
+          setEmail(doc.data().email)
+          setTel(doc.data().tel)
+          setNumber(doc.data().number)
+          setDateIn(doc.data().dateIn)
+          setDateOut(doc.data().dateOut)
+          tempDataArray = [
+            ...tempDataArray,
+            {
+              id: doc.id,
+              roomNumber: doc.data().roomNumber,
+              name: doc.data().name,
+              email: doc.data().email,
+              tel: doc.data().tel,
+              typeRoom: doc.data().typeRoom,
+              dateIn: doc.data().dateIn,
+              dateOut: doc.data().dateOut,
+              number: doc.data().number,
+              orderid: doc.data().orderid,
+              paymentStatus: doc.data().paymentStatus,
+              roomDetails: doc.data().roomDetails,
+              staTus: doc.data().staTus,
+              priceRoom: doc.data().priceRoom,
+            },
+          ];
+        } else {
+          console.log("No such document!");
+        }
+        setDataOne((dataOne) => tempDataArray);
+      })
+      .catch((error) => {
+        console.log("Error");
+      });
 
   }
 
-  function checkStatus(status,room){
+  function checkStatus(status, room) {
     var sTus = status.split("-");
-    if (sTus[0] == "อัพสลิปแล้ว"){
+    if (sTus[0] == "อัพสลิปแล้ว") {
       return <center><Button variant="info" onClick={() => routeChange(room)}>เช็คการชำระเงิน</Button></center>;
-    }else if (sTus[0] == "ยืนยันการจองแล้ว"){
+    } else if (sTus[0] == "ยืนยันการจองแล้ว") {
       return <center><Button variant="success" enable={false}>{status}</Button></center>;
     }
-    else if (sTus[0] == "รอชำระ"){
+    else if (sTus[0] == "รอชำระ") {
       return <center><Button variant="warning" enable={false}>{status}</Button></center>;
     }
     else {
       return <center><Button variant="danger" enable={false}>{status}</Button></center>;
     }
-    
-  }
 
+  }
+   
+
+  function choiceButton(status, room,imgSS) {
+    var sTus = status.split("-");
+    if (sTus[0] == "ยืนยันการจองแล้ว") {
+      return <div><Dropdown>
+        <Dropdown.Toggle variant="dark" id="dropdown-basic">
+          เพิ่มเติม
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+        <Dropdown.Item onClick={handleShow2} >ดูสลิป</Dropdown.Item>
+          <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
+          <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+      <Modal show={show2} onHide={handleClose2}>
+        <Modal.Header closeButton>
+          <Modal.Title>หลักฐานการจ่ายเงิน</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h1>Test</h1>
+            <img src={imgSS} style={{width:'100%',height:'100%'}}/>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose2}>
+            ยกเลิก
+          </Button>
+        </Modal.Footer>
+      </Modal>
+      </div>;
+
+    }
+    else {
+      return <Dropdown>
+        <Dropdown.Toggle variant="dark" id="dropdown-basic">
+          เพิ่มเติม
+        </Dropdown.Toggle>
+
+        <Dropdown.Menu>
+          <Dropdown.Item onClick={() => resetRoom(room)}>รีเซ็ต</Dropdown.Item>
+          <Dropdown.Item onClick={() => editRoom(room)}>แก้ไข</Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>;
+    }
+
+<<<<<<< HEAD
   function choiceButton(status,room){
     var sTus = status.split("-");
     if (sTus[0] == "ยืนยันการจองแล้ว") {
@@ -132,30 +186,32 @@ function Managers() {
     </Dropdown>;
     }
     
+=======
+>>>>>>> 688ec196619d13aa7d936aa709164c4c9393698b
   }
 
   const resetRoom = (room) => {
     firestore.collection("Rooms")
-.doc(room)
-.update({
-  name: "-",
-  email: "-",
-  tel: "-",
-  dateIn: "-",
-  dateOut: "-",
-  number: "-",
-  orderid: "-",
-  staTus: "ว่าง",
-  imgPath: "-"
-})
-.then(function () {
-console.log("Value successfully written!");
-alert("ล้างเรียบร้อย")
-})
-.catch(function (error) {
-console.error("Error writing Value: ", error);
-});
-}
+      .doc(room)
+      .update({
+        name: "-",
+        email: "-",
+        tel: "-",
+        dateIn: "-",
+        dateOut: "-",
+        number: "-",
+        orderid: "-",
+        staTus: "ว่าง",
+        imgPath: "-"
+      })
+      .then(function () {
+        console.log("Value successfully written!");
+        alert("ล้างเรียบร้อย")
+      })
+      .catch(function (error) {
+        console.error("Error writing Value: ", error);
+      });
+  }
 
   useEffect(() => {
 
@@ -179,9 +235,13 @@ console.error("Error writing Value: ", error);
                 orderid: doc.data().orderid,
                 paymentStatus: doc.data().paymentStatus,
                 roomDetails: doc.data().roomDetails,
-                staTus: checkStatus(doc.data().staTus,doc.data().roomNumber),
+                staTus: checkStatus(doc.data().staTus, doc.data().roomNumber),
                 priceRoom: doc.data().priceRoom,
+<<<<<<< HEAD
                 choice: choiceButton(doc.data().staTus,doc.data().roomNumber),
+=======
+                choice: choiceButton(doc.data().staTus, doc.data().roomNumber,doc.data().imgPath),
+>>>>>>> 688ec196619d13aa7d936aa709164c4c9393698b
               },
             ];
           }
@@ -197,25 +257,25 @@ console.error("Error writing Value: ", error);
 
   const updateDataforRoom = () => {
     firestore.collection("Rooms")
-.doc(roomEdit)
-.update({
-  name: name,
-  email: email,
-  tel: tel,
-  dateIn: dateIn,
-  dateOut: dateOut,
-  number: number,
-  orderid: "B"+roomEdit+tel+"K",
-})
-.then(function () {
-console.log("Value successfully written!");
-alert("แก้ไขเรียบร้อย")
-handleClose()
-})
-.catch(function (error) {
-console.error("Error writing Value: ", error);
-});
-}
+      .doc(roomEdit)
+      .update({
+        name: name,
+        email: email,
+        tel: tel,
+        dateIn: dateIn,
+        dateOut: dateOut,
+        number: number,
+        orderid: "B" + roomEdit + tel + "K",
+      })
+      .then(function () {
+        console.log("Value successfully written!");
+        alert("แก้ไขเรียบร้อย")
+        handleClose()
+      })
+      .catch(function (error) {
+        console.error("Error writing Value: ", error);
+      });
+  }
 
   const columns = [
     { title: <b>เลขห้อง</b>, field: 'roomNumber' },
@@ -253,30 +313,31 @@ console.error("Error writing Value: ", error);
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <center><div style={{ width: '98%',marginTop:'1%' }}>
+      <center><div style={{ width: '98%', marginTop: '1%' }}>
         <MaterialTable columns={columns} data={data} title='จัดการห้องพัก' options={{
-        paging:false,
-        pageSize:9}}/>
+          paging: false,
+          pageSize: 9
+        }} />
       </div></center>
       <Modal show={show} onHide={handleClose} animation={false}>
         <Modal.Header closeButton>
-        <Modal.Title>แก้ไขข้อมูล ห้อง {roomEdit}</Modal.Title>
+          <Modal.Title>แก้ไขข้อมูล ห้อง {roomEdit}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-        {dataOne.map((item, index) => {
-                        return (
-                          <div class="text-center">
-                            <TextField id="standard-basic" label="ชื่อ" value={name} onChange={(e) => setName(e.target.value)} />&nbsp;&nbsp;&nbsp;
-                            <TextField id="standard-basic" label="อีเมล" value={email}onChange={(e) => setEmail(e.target.value)} /><br/><br/>
-                            <TextField id="standard-basic" label="เบอร์" value={tel}onChange={(e) => setTel(e.target.value)} />&nbsp;&nbsp;&nbsp;
-                            <TextField id="standard-basic" label="จำนวนคนที่เข้าพัก" value={number}onChange={(e) => setNumber(e.target.value)} /><br/><br/>
-                            <TextField id="standard-basic" type="date" ata-date-format="YYYY-MM-DD" label="วันเข้าพัก" value={dateIn} onChange={(e) => setDateIn(e.target.value)}/>&nbsp;&nbsp;&nbsp;
-                            <TextField id="standard-basic" type="date" ata-date-format="YYYY-MM-DD" label="วันที่ออก" value={dateOut}onChange={(e) => setDateOut(e.target.value)} /><br/><br/>
-                            <TextField id="standard-basic" label="รหัสการจอง" value={item.orderid} disabled/>
-                          </div>
-                        );
-                  })
-        }
+          {dataOne.map((item, index) => {
+            return (
+              <div class="text-center">
+                <TextField id="standard-basic" label="ชื่อ" value={name} onChange={(e) => setName(e.target.value)} />&nbsp;&nbsp;&nbsp;
+                <TextField id="standard-basic" label="อีเมล" value={email} onChange={(e) => setEmail(e.target.value)} /><br /><br />
+                <TextField id="standard-basic" label="เบอร์" value={tel} onChange={(e) => setTel(e.target.value)} />&nbsp;&nbsp;&nbsp;
+                <TextField id="standard-basic" label="จำนวนคนที่เข้าพัก" value={number} onChange={(e) => setNumber(e.target.value)} /><br /><br />
+                <TextField id="standard-basic" type="date" ata-date-format="YYYY-MM-DD" label="วันเข้าพัก" value={dateIn} onChange={(e) => setDateIn(e.target.value)} />&nbsp;&nbsp;&nbsp;
+                <TextField id="standard-basic" type="date" ata-date-format="YYYY-MM-DD" label="วันที่ออก" value={dateOut} onChange={(e) => setDateOut(e.target.value)} /><br /><br />
+                <TextField id="standard-basic" label="รหัสการจอง" value={item.orderid} disabled />
+              </div>
+            );
+          })
+          }
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={handleClose}>
